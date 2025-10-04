@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentação - Funding 2.0</title>
+    <title>Calculadora de Funding 2.0</title>
     <style>
         * {
             margin: 0;
@@ -13,235 +13,285 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: #333;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
         }
 
         .container {
-            display: flex;
-            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        .sidebar {
-            width: 320px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-            transition: transform 0.3s ease;
-        }
-
-        .sidebar-header {
-            padding: 2rem;
-            border-bottom: 1px solid #e2e8f0;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .header {
+            text-align: center;
             color: white;
+            margin-bottom: 3rem;
         }
 
-        .sidebar-header h1 {
-            font-size: 1.5rem;
+        .header h1 {
+            font-size: 2.5rem;
             margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .nav-section {
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             margin-bottom: 2rem;
         }
 
-        .nav-title {
-            padding: 1rem 1.5rem 0.5rem;
-            font-weight: 600;
-            color: #4a5568;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .info-banner {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border: 2px solid #4fd1c7;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .nav-item {
+        .info-banner h3 {
+            color: #234e52;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-banner p {
+            color: #2c5f63;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
             display: block;
-            padding: 0.8rem 1.5rem;
+            font-weight: 600;
             color: #2d3748;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
         }
 
-        .nav-item:hover {
-            background: #f7fafc;
-            border-left-color: #667eea;
-            color: #667eea;
+        .input-wrapper {
+            position: relative;
         }
 
-        .nav-item.active {
-            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), transparent);
-            border-left-color: #667eea;
-            color: #667eea;
+        .currency-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
             font-weight: 500;
         }
 
-        .main-content {
-            flex: 1;
-            margin-left: 320px;
-            padding: 2rem;
-            background: white;
-            min-height: 100vh;
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
         }
 
-        .content-section {
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-section {
             display: none;
             animation: fadeIn 0.5s ease-out;
         }
 
-        .content-section.active {
+        .results-section.active {
             display: block;
         }
 
-        .section-header {
-            margin-bottom: 3rem;
-            text-align: center;
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
         }
 
-        .section-header h1 {
-            font-size: 3rem;
-            color: #2d3748;
-            margin-bottom: 1rem;
-        }
-
-        .section-header .breadcrumb {
-            color: #718096;
-            font-size: 1.1rem;
-        }
-
-        .step-by-step {
-            margin-bottom: 3rem;
-        }
-
-        .step {
-            background: #f8fafc;
+        .result-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
             border-radius: 15px;
             padding: 2rem;
-            margin-bottom: 2rem;
-            border-left: 4px solid #667eea;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
             position: relative;
         }
 
-        .step-number {
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .result-card.selected {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+        }
+
+        .result-card.selected::before {
+            content: '✓';
             position: absolute;
-            top: -10px;
-            left: 2rem;
-            background: #667eea;
-            color: white;
+            top: 1rem;
+            right: 1rem;
             width: 30px;
             height: 30px;
+            background: #48bb78;
+            color: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 0.9rem;
         }
 
-        .step h3 {
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
             color: #2d3748;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
         }
 
-        .step p {
-            color: #4a5568;
-            margin-bottom: 1rem;
-        }
-
-        .step ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .step li {
-            padding: 0.5rem 0;
-            padding-left: 2rem;
-            position: relative;
-        }
-
-        .step li::before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #48bb78;
-            font-weight: bold;
-        }
-
-        .info-box {
-            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
-            border: 2px solid #4fd1c7;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .warning-box {
-            background: linear-gradient(135deg, #fef5e7, #fed7aa);
-            border: 2px solid #ed8936;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .critical-box {
-            background: linear-gradient(135deg, #fed7d7, #feb2b2);
-            border: 2px solid #e53e3e;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .faq-item {
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 15px;
-            margin-bottom: 1rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .faq-item:hover {
-            border-color: #667eea;
-        }
-
-        .faq-question {
-            padding: 1.5rem;
-            cursor: pointer;
+        .result-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            background: #f8fafc;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #4a5568;
             font-weight: 500;
         }
 
-        .faq-answer {
+        .result-value {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .highlight-value {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .tutorial-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .tutorial-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tutorial-header h2 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .steps-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 15px;
             padding: 1.5rem;
-            display: none;
-            animation: slideDown 0.3s ease-out;
+            border-left: 5px solid #667eea;
         }
 
-        .faq-answer.active {
-            display: block;
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
-        .mobile-menu-toggle {
-            display: none;
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1000;
-            background: #667eea;
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
-            border: none;
-            padding: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .step-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-left: 3rem;
+        }
+
+        .screenshot-container {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e0;
             border-radius: 10px;
-            cursor: pointer;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            color: #718096;
         }
 
         @keyframes fadeIn {
@@ -249,442 +299,237 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes slideDown {
-            from { opacity: 0; max-height: 0; }
-            to { opacity: 1; max-height: 500px; }
-        }
-
         @media (max-width: 768px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-
-            .sidebar.mobile-open {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .section-header h1 {
-                font-size: 2rem;
+            .results-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-        ☰ Menu
-    </button>
-
     <div class="container">
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <h1>📖 Documentação</h1>
-                <p>Funding 2.0</p>
+        <div class="header">
+            <h1>💰 Calculadora de Funding 2.0</h1>
+            <p>Simule parcelas e retorno do investimento</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="info-banner">
+                <h3>ℹ️ Como usar esta calculadora</h3>
+                <p><strong>1.</strong> Acesse o orçamento no ERP e localize o campo "Valor de Comodato/Locação" (veja tutorial abaixo)</p>
+                <p><strong>2.</strong> Digite esse valor na calculadora</p>
+                <p><strong>3.</strong> Escolha a melhor opção de parcelamento para sua negociação</p>
             </div>
 
-            <div class="nav-section">
-                <div class="nav-title">Início</div>
-                <a href="#overview" class="nav-item active" onclick="showSection('overview')">Visão Geral</a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Processo</div>
-                <a href="#montagem" class="nav-item" onclick="showSection('montagem')">1. Montagem do Orçamento</a>
-                <a href="#simulacoes" class="nav-item" onclick="showSection('simulacoes')">2. Simulações na Calculadora</a>
-                <a href="#aprovacao" class="nav-item" onclick="showSection('aprovacao')">3. Aprovação FP&A</a>
-                <a href="#implantacao" class="nav-item" onclick="showSection('implantacao')">4. Implantação</a>
-                <a href="#finalizacao" class="nav-item" onclick="showSection('finalizacao')">5. Finalização da Obra</a>
-                <a href="#contrato" class="nav-item" onclick="showSection('contrato')">6. Contrato e Crédito</a>
-            </div>
-
-            <div class="nav-section">
-                <div class="nav-title">Suporte</div>
-                <a href="#faq" class="nav-item" onclick="showSection('faq')">Perguntas Frequentes</a>
-                <a href="#contacts" class="nav-item" onclick="showSection('contacts')">Contatos</a>
-            </div>
-        </nav>
-
-        <main class="main-content">
-            <!-- Seção Overview -->
-            <section class="content-section active" id="overview">
-                <div class="section-header">
-                    <h1>📖 Manual do Processo de Funding</h1>
-                    <p class="breadcrumb">Início > Visão Geral</p>
+            <div class="input-section">
+                <div class="input-group">
+                    <label>Valor de Comodato/Locação</label>
+                    <div class="input-wrapper">
+                        <span class="currency-prefix">R$</span>
+                        <input 
+                            type="number" 
+                            id="valorInput" 
+                            placeholder="0,00" 
+                            step="0.01"
+                            min="0"
+                        >
+                    </div>
+                    <small style="color: #718096; margin-top: 0.5rem; display: block;">
+                        Este valor já inclui a margem de 35% calculada pelo ERP
+                    </small>
                 </div>
 
-                <div class="info-box">
-                    <h3>🎯 Para Stakeholders</h3>
-                    <p>Este manual detalha o processo de funding, orientando você a utilizá-lo como estratégia de vendas.</p>
-                </div>
-            </section>
+                <button class="calculate-btn" onclick="calcular()">
+                    🧮 Calcular Parcelas
+                </button>
+            </div>
 
-            <!-- Seção Montagem Orçamento -->
-            <section class="content-section" id="montagem">
-                <div class="section-header">
-                    <h1>1️⃣ Montagem do Orçamento</h1>
-                    <p class="breadcrumb">Processo > Montagem do Orçamento</p>
-                </div>
+            <div class="results-section" id="resultsSection">
+                <h3 style="text-align: center; color: #2d3748; margin-bottom: 1rem;">
+                    📊 Opções de Parcelamento
+                </h3>
+                <div class="results-grid" id="resultsGrid"></div>
+            </div>
+        </div>
 
-                <div class="step-by-step">
-                    <div class="step">
+        <div class="tutorial-section">
+            <div class="tutorial-header">
+                <h2>📖 Onde encontrar o Valor de Comodato/Locação no ERP</h2>
+                <p style="color: #718096;">Siga este passo a passo para localizar o valor correto</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-header">
                         <div class="step-number">1</div>
-                        <h3>Acesso e Elaboração</h3>
-                        <ul>
-                            <li>Acesse o portal do consultor</li>
-                            <li>Selecione o prospect</li>
-                            <li>Elabore a proposta</li>
-                            <li>Envie a proposta para o ERP para ajustes finais</li>
-                        </ul>
+                        <div class="step-title">Acesse o Orçamento</div>
                     </div>
+                    <div class="step-description">
+                        No sistema ERP, navegue até o orçamento criado para o funding
+                    </div>
+                </div>
 
-                    <div class="step">
+                <div class="step-card">
+                    <div class="step-header">
                         <div class="step-number">2</div>
-                        <h3>Definição de Produtos</h3>
-                        <p>O portal do consultor deve gerar um orçamento com produtos baseados nas definições, características e preferências do cliente, conforme indicado na etapa de montagem.</p>
-                        
-                        <div class="info-box">
-                            <p><strong>Os produtos definidos pelo portal do consultor sempre respeitam as definições de produtos padrões estabelecidas pela sua unidade.</strong></p>
-                            <p>Isso garante que o sistema calcule as quantidades com base no orçamento elaborado, utilizando apenas modelos de produtos previamente definidos pela unidade.</p>
-                            <p><strong>Exemplo:</strong> "Câmera X Hikivision" para áreas externas e "Camera Y Intelbras" para áreas internas.</p>
+                        <div class="step-title">Localize o Campo</div>
+                    </div>
+                    <div class="step-description">
+                        Na tela de orçamento, procure pelo campo <strong>"Valor de Comodato/Locação"</strong>
+                        <div class="screenshot-container">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='100'%3E%3Crect width='600' height='100' fill='%23f8fafc'/%3E%3Ctext x='300' y='50' font-family='Arial' font-size='14' fill='%23718096' text-anchor='middle' dominant-baseline='middle'%3EVeja o print de exemplo acima - Valor exibido: R$ 2.754,01%3C/text%3E%3C/svg%3E" alt="Localização do campo" style="max-width: 100%; border-radius: 8px;">
                         </div>
                     </div>
+                </div>
 
-                    <div class="step">
+                <div class="step-card">
+                    <div class="step-header">
                         <div class="step-number">3</div>
-                        <h3>Consulta e Validação no ERP</h3>
-                        <p>O portal do consultor informará o número do orçamento criado no ERP.</p>
-                        <ul>
-                            <li>Acesse o ERP e navegue: <strong>Operacional/Vendas > Orçamentos > Consulta de Orçamentos</strong></li>
-                            <li>Utilize os campos de filtro (Orçam:, Cliente, Vendedor, etc.) para localizar o orçamento desejado</li>
-                        </ul>
-                        
-                        <div class="critical-box">
-                            <strong>IMPORTANTE:</strong> Certifique-se de validar que o número do orçamento no ERP é idêntico ao número do orçamento no portal do consultor para garantir que está trabalhando com o documento correto.
-                        </div>
+                        <div class="step-title">Copie o Valor</div>
                     </div>
-
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <h3>Simulações Preliminares</h3>
-                        <p>Com o orçamento gravado no sistema como provisório, realize simulações para identificar o plano mais adequado para a negociação.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção Simulações -->
-            <section class="content-section" id="simulacoes">
-                <div class="section-header">
-                    <h1>2️⃣ Simulações na Calculadora de Funding</h1>
-                    <p class="breadcrumb">Processo > Simulações</p>
-                </div>
-
-                <div class="step-by-step">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h3>Acesso às Informações</h3>
-                        <p>Abra o orçamento no ERP e acesse a aba <strong>"FECHAMENTO"</strong>. Esta aba contém as informações necessárias para utilizar a calculadora.</p>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h3>Preenchimento da Calculadora</h3>
-                        <ul>
-                            <li>Acesse a <a href="calculadora.html" target="_blank">calculadora de funding</a></li>
-                            <li>Preencha o campo "Valor" com o <strong>"Valor Total do Seu Orçamento"</strong></li>
-                        </ul>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h3>Definição do Plano</h3>
-                        <p>A calculadora apresentará três opções de parcelamento com base no valor inserido.</p>
-                        <ul>
-                            <li>Insira a parcela escolhida no campo <strong>"Valor de Locação/Comodato"</strong> no orçamento</li>
-                            <li>Verifique se o tempo de retorno da locação no orçamento corresponde ao retorno indicado pela calculadora</li>
-                        </ul>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <h3>Finalização e Aprovação</h3>
-                        <ul>
-                            <li>Após a definição, realize os ajustes finais no orçamento</li>
-                            <li>Colete os dados para o fechamento</li>
-                            <li>Após o fechamento, um ticket automático será gerado e enviado ao time de FP&A da matriz para aprovação</li>
+                    <div class="step-description">
+                        Copie o valor exibido e cole na calculadora acima. Este valor já contempla:
+                        <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                            <li>Custo real dos produtos</li>
+                            <li>Margem de 35% (markup já aplicado pelo sistema)</li>
                         </ul>
                     </div>
                 </div>
-            </section>
 
-            <!-- Seção Aprovação -->
-            <section class="content-section" id="aprovacao">
-                <div class="section-header">
-                    <h1>3️⃣ Aprovação do FP&A</h1>
-                    <p class="breadcrumb">Processo > Aprovação</p>
-                </div>
-
-                <div class="step">
-                    <h3>Comunicação da Aprovação</h3>
-                    <p>O time de FP&A encaminhará a aprovação pelo mesmo ticket.</p>
-                    <p><strong>SLA (Service Level Agreement) para aprovação: 2 dias úteis</strong></p>
-                </div>
-            </section>
-
-            <!-- Seção Implantação -->
-            <section class="content-section" id="implantacao">
-                <div class="section-header">
-                    <h1>4️⃣ Consolidação do Negócio e Implantação</h1>
-                    <p class="breadcrumb">Processo > Implantação</p>
-                </div>
-
-                <div class="step-by-step">
-                    <div class="step">
-                        <h3>Sinal Verde para Negociação</h3>
-                        <p>A aprovação é o sinal verde para prosseguir com as negociações conforme o plano definido.</p>
-                        <p>Inicie o planejamento e a execução da obra!</p>
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">⚠️</div>
+                        <div class="step-title">IMPORTANTE: Remova Produtos da Matriz</div>
                     </div>
-
-                    <div class="step">
-                        <h3>Respeito ao Escopo do Orçamento</h3>
-                        <div class="critical-box">
-                            <p><strong>É fundamental que o escopo do orçamento seja integralmente respeitado até o final da obra.</strong></p>
-                            <ul>
-                                <li>A Ordem de Serviço (OS) deve ser um espelho do orçamento</li>
-                                <li>Qualquer alteração de produtos, quantidades ou valores na OS deverá passar por aprovação gerencial do gestor da unidade</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="info-box">
-                            <h4>Exemplo:</h4>
-                            <p>Ao abrir a Ordem de Serviço referente ao orçamento 0012 no ERP, o sistema replica todos os itens.</p>
-                            <p>Se houver modificação de produtos, quantidades ou valores, uma solicitação de aprovação será gerada para o gestor.</p>
-                        </div>
+                    <div class="step-description">
+                        <strong style="color: #e53e3e;">Antes de usar a calculadora, certifique-se de remover os produtos da Matriz do orçamento.</strong>
+                        <br>O funding deve contemplar apenas os produtos que serão adquiridos/locados para o cliente específico.
                     </div>
                 </div>
-            </section>
-
-            <!-- Seção Finalização -->
-            <section class="content-section" id="finalizacao">
-                <div class="section-header">
-                    <h1>5️⃣ Finalização da Obra e Solicitação de Crédito</h1>
-                    <p class="breadcrumb">Processo > Finalização</p>
-                </div>
-
-                <div class="step-by-step">
-                    <div class="step">
-                        <h3>Condições para Solicitação</h3>
-                        <p>Após a finalização da obra e a ativação do serviço você estará apto a solicitar o crédito negociado ao FP&A.</p>
-                        <ul>
-                            <li>Ativação BA</li>
-                            <li>Entrega do serviço no sistema</li>
-                        </ul>
-                    </div>
-
-                    <div class="step">
-                        <h3>Solicitação de Capital</h3>
-                        <p>Em seguida, o FP&A solicitará o capital à Q4Sec.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção Contrato -->
-            <section class="content-section" id="contrato">
-                <div class="section-header">
-                    <h1>6️⃣ Assinatura do Contrato e Recebimento do Crédito</h1>
-                    <p class="breadcrumb">Processo > Contrato</p>
-                </div>
-
-                <div class="step-by-step">
-                    <div class="step">
-                        <h3>Envio e Assinatura do Contrato</h3>
-                        <p>Com a solicitação, a Q4Sec será responsável por enviar o contrato para a assinatura das partes envolvidas.</p>
-                    </div>
-
-                    <div class="step">
-                        <h3>Liberação do Crédito</h3>
-                        <ul>
-                            <li>Após a assinatura do contrato, o valor será creditado na conta da unidade</li>
-                            <li>Os boletos referentes às parcelas começarão a ser enviados no mês seguinte</li>
-                            <li><strong>Todos em nome da Filial</strong></li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção FAQ -->
-            <section class="content-section" id="faq">
-                <div class="section-header">
-                    <h1>❓ Perguntas Frequentes</h1>
-                    <p class="breadcrumb">Suporte > FAQ</p>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Posso alterar o orçamento após aprovação do FP&A?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p><strong>NÃO.</strong> Qualquer alteração de produtos, quantidades ou valores após a aprovação precisa de nova aprovação gerencial e pode invalidar o funding.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Quanto tempo leva para o FP&A aprovar?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>O SLA é de <strong>2 dias úteis</strong> para aprovação.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Quando recebo o crédito na conta?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Após a assinatura do contrato com a Q4Sec, o valor é creditado na conta da unidade e os boletos das parcelas começam a chegar no mês seguinte.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção Contacts -->
-            <section class="content-section" id="contacts">
-                <div class="section-header">
-                    <h1>📞 Contatos</h1>
-                    <p class="breadcrumb">Suporte > Contatos</p>
-                </div>
-
-                <div class="step">
-                    <h3>Dúvidas sobre Funding</h3>
-                    <p><strong>Equipe FP&A</strong></p>
-                    <p>E-mail: fpa@portergroup.com.br</p>
-                </div>
-
-                <div class="step">
-                    <h3>Suporte Técnico</h3>
-                    <p><strong>Bernardo Kunz</strong></p>
-                    <p>E-mail: bernardo.kunz@portergroup.com.br</p>
-                    <p>Telefone: (48) 9 9958-7766</p>
-                </div>
-
-                <div class="info-box">
-                    <h3>🔗 Links Úteis</h3>
-                    <ul>
-                        <li><a href="calculadora.html" target="_blank">Calculadora de Funding</a></li>
-                        <li><a href="index.html">Voltar ao Hub</a></li>
-                    </ul>
-                </div>
-            </section>">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Quanto tempo demora para receber o crédito?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Após a ativação do serviço e solicitação ao FP&A, o processamento com a Q4Sec leva em média <strong>5 a 10 dias úteis</strong> até o crédito na conta.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Todo cliente é aprovado para funding?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>Não. O FP&A faz consulta ao Serasa e analisa o risco de crédito. Clientes com restrições podem ser reprovados.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <div class="faq-question" onclick="toggleFAQ(this)">
-                        <span>Por que preciso remover produtos da Matriz?</span>
-                        <span>+</span>
-                    </div>
-                    <div class="faq-answer">
-                        <p>O funding contempla apenas equipamentos específicos do cliente. Produtos da Matriz não entram no cálculo do financiamento e podem distorcer os valores.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Seção Contacts -->
-            <section class="content-section" id="contacts">
-                <div class="section-header">
-                    <h1>📞 Contatos</h1>
-                    <p class="breadcrumb">Suporte > Contatos</p>
-                </div>
-
-                <div class="step-by-step">
-                    <div class="step">
-                        <h3>Dúvidas sobre Funding</h3>
-                        <p><strong>Equipe FP&A</strong></p>
-                        <p>E-mail: fpa@portergroup.com.br</p>
-                    </div>
-
-                    <div class="step">
-                        <h3>Suporte Técnico (Sistema)</h3>
-                        <p><strong>Bernardo Kunz</strong></p>
-                        <p>E-mail: bernardo.kunz@portergroup.com.br</p>
-                        <p>Telefone: (48) 9 9958-7766</p>
-                    </div>
-
-                    <div class="step">
-                        <h3>Problemas com Orçamento/ERP</h3>
-                        <p><strong>Suporte Inside</strong></p>
-                        <p>Abra chamado através do sistema de tickets</p>
-                    </div>
-                </div>
-
-                <div class="info-box">
-                    <h3>🔗 Links Úteis</h3>
-                    <ul>
-                        <li><a href="calculadora.html" target="_blank">Calculadora de Funding</a></li>
-                        <li><a href="index.html">Voltar ao Hub</a></li>
-                        <li><a href="https://github.com/bene-sysa/funding-2.0" target="_blank">Repositório no GitHub</a></li>
-                    </ul>
-                </div>
-            </section>
-        </main>
+            </div>
+        </div>
     </div>
 
     <script>
-        function showSection(sectionId) {
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
+        let selectedPlan = null;
+
+        function calcular() {
+            const valorInput = document.getElementById('valorInput');
+            const valor = parseFloat(valorInput.value);
+
+            console.log('Valor digitado:', valorInput.value);
+            console.log('Valor parseado:', valor);
+
+            if (!valor || valor <= 0 || isNaN(valor)) {
+                alert('Por favor, insira um valor válido maior que zero.');
+                return;
+            }
+
+            // Cálculo do custo real que será contratado com Q4Sec (removendo os 35%)
+            const valorQ4Sec = valor / 1.35;
+
+            // Taxas mensais
+            const taxaCliente = 0.028; // 2,8% ao mês (taxa repassada ao cliente)
+            const taxaQ4Sec = 0.024;   // 2,4% ao mês (taxa da Q4Sec)
+
+            const planos = [
+                { prazo: 48, nome: '48 meses' },
+                { prazo: 60, nome: '60 meses' },
+                { prazo: 72, nome: '72 meses' }
+            ];
+
+            const resultados = planos.map(plano => {
+                // Função PMT: calcula o pagamento de um empréstimo
+                // PMT = (VP * taxa) / (1 - (1 + taxa)^-prazo)
+                
+                // PMT que o cliente pagará mensalmente
+                const pmtCliente = (valor * taxaCliente) / (1 - Math.pow(1 + taxaCliente, -plano.prazo));
+                
+                // PMT que a filial pagará à Q4Sec mensalmente
+                const pmtQ4Sec = (valorQ4Sec * taxaQ4Sec) / (1 - Math.pow(1 + taxaQ4Sec, -plano.prazo));
+                
+                // Tempo de retorno: quantos meses da parcela do cliente são necessários
+                // para cobrir o valor total de comodato/locação
+                // Se tiver qualquer fração de mês, arredonda para cima
+                const tempoRetorno = Math.ceil(valor / pmtCliente);
+
+                return {
+                    ...plano,
+                    pmtCliente: pmtCliente,
+                    pmtQ4Sec: pmtQ4Sec,
+                    tempoRetorno: tempoRetorno,
+                    valorQ4Sec: valorQ4Sec
+                };
             });
 
-            document.getElementById(sectionId).classList.add('active');
+            exibirResultados(resultados, valor);
+        }
 
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+        function exibirResultados(resultados, valorOriginal) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsGrid = document.getElementById('resultsGrid');
+
+            resultsGrid.innerHTML = '';
+
+            resultados.forEach((resultado, index) => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.onclick = () => selecionarPlano(index);
+                card.id = `plan-${index}`;
+
+                card.innerHTML = `
+                    <div class="result-title">${resultado.nome}</div>
+                    <div class="result-item">
+                        <span class="result-label">Parcela Mensal (Cliente)</span>
+                        <span class="result-value highlight-value">R$ ${resultado.pmtCliente.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tempo de Retorno</span>
+                        <span class="result-value">${resultado.tempoRetorno} meses</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Crédito a Receber da Q4Sec</span>
+                        <span class="result-value">R$ ${resultado.valorQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Parcela à Q4Sec (mensal)</span>
+                        <span class="result-value">R$ ${resultado.pmtQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                `;
+
+                resultsGrid.appendChild(card);
             });
-            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
 
-            document.getElementById('sidebar').classList.remove('mobile-open');
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        function toggleFAQ(element) {
-            const answer = element.nextElementSibling;
-            const icon = element.querySelector('span:last-child');
-            
-            answer.classList.toggle('active');
-            icon.textContent = answer.classList.contains('active') ? '−' : '+';
+        function selecionarPlano(index) {
+            // Remove seleção anterior
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Adiciona seleção ao plano escolhido
+            document.getElementById(`plan-${index}`).classList.add('selected');
+            selectedPlan = index;
         }
 
-        function toggleMobileMenu() {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
-        }
+        // Remover formatação automática que estava impedindo o input
+        // document.getElementById('valorInput').addEventListener('input', function(e) {
+        //     let value = e.target.value.replace(/\D/g, '');
+        //     if (value) {
+        //         value = (parseInt(value) / 100).toFixed(2);
+        //         e.target.value = value;
+        //     }
+        // });
 
-        document.addEventListener('click', function(e) {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.querySelector('.mobile-menu-toggle');
-            
-            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
-                sidebar.classList.remove('mobile-open');
+        // Calcular ao pressionar Enter
+        document.getElementById('valorInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calcular();
+            }
+        });
+    </script>
+</body>
+</html>
