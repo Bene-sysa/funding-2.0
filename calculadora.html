@@ -414,11 +414,14 @@
         let selectedPlan = null;
 
         function calcular() {
-            const valorInput = document.getElementById('valorInput').value;
-            const valor = parseFloat(valorInput);
+            const valorInput = document.getElementById('valorInput');
+            const valor = parseFloat(valorInput.value);
 
-            if (!valor || valor <= 0) {
-                alert('Por favor, insira um valor válido.');
+            console.log('Valor digitado:', valorInput.value);
+            console.log('Valor parseado:', valor);
+
+            if (!valor || valor <= 0 || isNaN(valor)) {
+                alert('Por favor, insira um valor válido maior que zero.');
                 return;
             }
 
@@ -454,8 +457,7 @@
                     ...plano,
                     pmtCliente: pmtCliente,
                     pmtQ4Sec: pmtQ4Sec,
-                    tempoRetornoMeses: tempoRetornoMeses,
-                    tempoRetornoDias: diasRestantes,
+                    tempoRetorno: tempoRetorno,
                     valorQ4Sec: valorQ4Sec
                 };
             });
@@ -483,7 +485,7 @@
                     </div>
                     <div class="result-item">
                         <span class="result-label">Tempo de Retorno</span>
-                        <span class="result-value">${resultado.tempoRetornoMeses} meses e ${resultado.tempoRetornoDias} dias</span>
+                        <span class="result-value">${resultado.tempoRetorno} meses</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Crédito a Receber da Q4Sec</span>
@@ -513,14 +515,14 @@
             selectedPlan = index;
         }
 
-        // Formatar input enquanto digita
-        document.getElementById('valorInput').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value) {
-                value = (parseInt(value) / 100).toFixed(2);
-                e.target.value = value;
-            }
-        });
+        // Remover formatação automática que estava impedindo o input
+        // document.getElementById('valorInput').addEventListener('input', function(e) {
+        //     let value = e.target.value.replace(/\D/g, '');
+        //     if (value) {
+        //         value = (parseInt(value) / 100).toFixed(2);
+        //         e.target.value = value;
+        //     }
+        // });
 
         // Calcular ao pressionar Enter
         document.getElementById('valorInput').addEventListener('keypress', function(e) {
