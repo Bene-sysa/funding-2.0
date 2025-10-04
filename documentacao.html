@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Funding 2.0</title>
+    <title>Documentação - Funding 2.0</title>
     <style>
         * {
             margin: 0;
@@ -13,285 +13,235 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 3rem;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .calculator-card {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            margin-bottom: 2rem;
-        }
-
-        .info-banner {
-            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
-            border: 2px solid #4fd1c7;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .info-banner h3 {
-            color: #234e52;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .info-banner p {
-            color: #2c5f63;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #333;
             line-height: 1.6;
         }
 
-        .input-section {
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-section {
             margin-bottom: 2rem;
         }
 
-        .input-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group label {
-            display: block;
+        .nav-title {
+            padding: 1rem 1.5rem 0.5rem;
             font-weight: 600;
+            color: #4a5568;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 0.8rem 1.5rem;
             color: #2d3748;
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
         }
 
-        .input-wrapper {
-            position: relative;
+        .nav-item:hover {
+            background: #f7fafc;
+            border-left-color: #667eea;
+            color: #667eea;
         }
 
-        .currency-prefix {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #718096;
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), transparent);
+            border-left-color: #667eea;
+            color: #667eea;
             font-weight: 500;
         }
 
-        input[type="number"] {
-            width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+        .main-content {
+            flex: 1;
+            margin-left: 320px;
+            padding: 2rem;
+            background: white;
+            min-height: 100vh;
         }
 
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .calculate-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 1.2rem 3rem;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .calculate-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .results-section {
+        .content-section {
             display: none;
             animation: fadeIn 0.5s ease-out;
         }
 
-        .results-section.active {
+        .content-section.active {
             display: block;
         }
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .result-card {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border-radius: 15px;
-            padding: 2rem;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .result-card:hover {
-            transform: translateY(-5px);
-            border-color: #667eea;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
-        }
-
-        .result-card.selected {
-            border-color: #48bb78;
-            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
-        }
-
-        .result-card.selected::before {
-            content: '✓';
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            width: 30px;
-            height: 30px;
-            background: #48bb78;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .result-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 1.5rem;
+        .section-header {
+            margin-bottom: 3rem;
             text-align: center;
         }
 
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
-        .result-item:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: #4a5568;
-            font-weight: 500;
-        }
-
-        .result-value {
+        .section-header h1 {
+            font-size: 3rem;
             color: #2d3748;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-
-        .highlight-value {
-            color: #667eea;
-            font-size: 1.3rem;
-        }
-
-        .tutorial-section {
-            background: white;
-            border-radius: 20px;
-            padding: 2.5rem;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .tutorial-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .tutorial-header h2 {
-            color: #2d3748;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .steps-container {
-            display: grid;
-            gap: 1.5rem;
-        }
-
-        .step-card {
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            border-radius: 15px;
-            padding: 1.5rem;
-            border-left: 5px solid #667eea;
-        }
-
-        .step-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
             margin-bottom: 1rem;
         }
 
+        .section-header .breadcrumb {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .step-by-step {
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
         .step-number {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            position: absolute;
+            top: -10px;
+            left: 2rem;
+            background: #667eea;
             color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-size: 0.9rem;
         }
 
-        .step-title {
-            font-size: 1.2rem;
-            font-weight: 600;
+        .step h3 {
             color: #2d3748;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
         }
 
-        .step-description {
+        .step p {
             color: #4a5568;
-            line-height: 1.6;
-            margin-left: 3rem;
+            margin-bottom: 1rem;
         }
 
-        .screenshot-container {
+        .step ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .step li {
+            padding: 0.5rem 0;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .step li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border: 2px solid #4fd1c7;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fef5e7, #fed7aa);
+            border: 2px solid #ed8936;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .critical-box {
+            background: linear-gradient(135deg, #fed7d7, #feb2b2);
+            border: 2px solid #e53e3e;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .faq-item {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: #667eea;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background: #f8fafc;
-            border: 2px dashed #cbd5e0;
+            font-weight: 500;
+        }
+
+        .faq-answer {
+            padding: 1.5rem;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1000;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.8rem;
             border-radius: 10px;
-            padding: 1rem;
-            margin-top: 1rem;
-            text-align: center;
-            color: #718096;
+            cursor: pointer;
         }
 
         @keyframes fadeIn {
@@ -299,237 +249,483 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 500px; }
+        }
+
         @media (max-width: 768px) {
-            .results-grid {
-                grid-template-columns: 1fr;
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .section-header h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
+    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+        ☰ Menu
+    </button>
+
     <div class="container">
-        <div class="header">
-            <h1>💰 Calculadora de Funding 2.0</h1>
-            <p>Simule parcelas e retorno do investimento</p>
-        </div>
-
-        <div class="calculator-card">
-            <div class="info-banner">
-                <h3>ℹ️ Como usar esta calculadora</h3>
-                <p><strong>1.</strong> Acesse o orçamento no ERP e localize o campo "Valor de Comodato/Locação" (veja tutorial abaixo)</p>
-                <p><strong>2.</strong> Digite esse valor na calculadora</p>
-                <p><strong>3.</strong> Escolha a melhor opção de parcelamento para sua negociação</p>
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>📖 Documentação</h1>
+                <p>Funding 2.0</p>
             </div>
 
-            <div class="input-section">
-                <div class="input-group">
-                    <label>Valor de Comodato/Locação</label>
-                    <div class="input-wrapper">
-                        <span class="currency-prefix">R$</span>
-                        <input 
-                            type="number" 
-                            id="valorInput" 
-                            placeholder="0,00" 
-                            step="0.01"
-                            min="0"
-                        >
-                    </div>
-                    <small style="color: #718096; margin-top: 0.5rem; display: block;">
-                        Este valor já inclui a margem de 35% calculada pelo ERP
-                    </small>
+            <div class="nav-section">
+                <div class="nav-title">Início</div>
+                <a href="#overview" class="nav-item active" onclick="showSection('overview')">O que é Funding</a>
+                <a href="#benefits" class="nav-item" onclick="showSection('benefits')">Vantagens</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Como Usar</div>
+                <a href="#calculator" class="nav-item" onclick="showSection('calculator')">Usando a Calculadora</a>
+                <a href="#process" class="nav-item" onclick="showSection('process')">Processo Completo</a>
+                <a href="#erp" class="nav-item" onclick="showSection('erp')">Registro no ERP</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Suporte</div>
+                <a href="#faq" class="nav-item" onclick="showSection('faq')">Perguntas Frequentes</a>
+                <a href="#contacts" class="nav-item" onclick="showSection('contacts')">Contatos</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <!-- Seção Overview -->
+            <section class="content-section active" id="overview">
+                <div class="section-header">
+                    <h1>💰 O que é Funding?</h1>
+                    <p class="breadcrumb">Início > O que é Funding</p>
                 </div>
 
-                <button class="calculate-btn" onclick="calcular()">
-                    🧮 Calcular Parcelas
-                </button>
-            </div>
+                <div class="info-box">
+                    <h3>🎯 Definição</h3>
+                    <p>Funding é uma modalidade de financiamento que permite ao cliente parcelar o investimento em equipamentos de segurança em até 72 meses, facilitando a contratação sem comprometer o fluxo de caixa do condomínio.</p>
+                </div>
 
-            <div class="results-section" id="resultsSection">
-                <h3 style="text-align: center; color: #2d3748; margin-bottom: 1rem;">
-                    📊 Opções de Parcelamento
-                </h3>
-                <div class="results-grid" id="resultsGrid"></div>
-            </div>
-        </div>
-
-        <div class="tutorial-section">
-            <div class="tutorial-header">
-                <h2>📖 Onde encontrar o Valor de Comodato/Locação no ERP</h2>
-                <p style="color: #718096;">Siga este passo a passo para localizar o valor correto</p>
-            </div>
-
-            <div class="steps-container">
-                <div class="step-card">
-                    <div class="step-header">
+                <div class="step-by-step">
+                    <h2>Como Funciona</h2>
+                    
+                    <div class="step">
                         <div class="step-number">1</div>
-                        <div class="step-title">Acesse o Orçamento</div>
+                        <h3>Cliente Parcela o Investimento</h3>
+                        <p>Em vez de pagar o valor total da implantação de uma vez, o cliente divide em parcelas mensais fixas.</p>
                     </div>
-                    <div class="step-description">
-                        No sistema ERP, navegue até o orçamento criado para o funding
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Recebemos o Valor Integral</h3>
+                        <p>A Q4Sec nos paga o valor total da implantação antecipadamente, permitindo executar a obra sem esperar.</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Pagamos a Q4Sec em Parcelas</h3>
+                        <p>Assumimos o financiamento com a Q4Sec, pagando parcelas mensais com juros de 2,4% ao mês.</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Nossa Margem de Lucro</h3>
+                        <p>Repassamos ao cliente com juros de 2,8% ao mês, gerando margem sobre o financiamento.</p>
                     </div>
                 </div>
 
-                <div class="step-card">
-                    <div class="step-header">
-                        <div class="step-number">2</div>
-                        <div class="step-title">Localize o Campo</div>
+                <div class="warning-box">
+                    <h3>⚠️ Importante Saber</h3>
+                    <p><strong>Tempo de Retorno:</strong> É quantos meses levamos recebendo do cliente para cobrir o valor total financiado. Quanto menor, melhor para nosso fluxo de caixa.</p>
+                </div>
+            </section>
+
+            <!-- Seção Benefits -->
+            <section class="content-section" id="benefits">
+                <div class="section-header">
+                    <h1>✨ Vantagens do Funding</h1>
+                    <p class="breadcrumb">Início > Vantagens</p>
+                </div>
+
+                <div class="step-by-step">
+                    <h2>Para o Cliente</h2>
+                    
+                    <div class="step">
+                        <h3>Facilita a Aprovação em Assembleias</h3>
+                        <p>Parcelas mensais são mais fáceis de aprovar do que um investimento alto de uma vez.</p>
                     </div>
-                    <div class="step-description">
-                        Na tela de orçamento, procure pelo campo <strong>"Valor de Comodato/Locação"</strong>
-                        <div class="screenshot-container">
-                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='100'%3E%3Crect width='600' height='100' fill='%23f8fafc'/%3E%3Ctext x='300' y='50' font-family='Arial' font-size='14' fill='%23718096' text-anchor='middle' dominant-baseline='middle'%3EVeja o print de exemplo acima - Valor exibido: R$ 2.754,01%3C/text%3E%3C/svg%3E" alt="Localização do campo" style="max-width: 100%; border-radius: 8px;">
+
+                    <div class="step">
+                        <h3>Preserva o Caixa do Condomínio</h3>
+                        <p>Não compromete o fundo de reserva com grandes desembolsos.</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Previsibilidade</h3>
+                        <p>Parcelas fixas facilitam o planejamento financeiro do condomínio.</p>
+                    </div>
+                </div>
+
+                <div class="step-by-step">
+                    <h2>Para Nossa Operação</h2>
+                    
+                    <div class="step">
+                        <h3>Fecha Mais Negócios</h3>
+                        <p>Elimina a principal objeção: "não temos orçamento agora".</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Recebimento Imediato</h3>
+                        <p>A Q4Sec paga o valor total antecipadamente, permitindo executar sem esperar.</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Margem Adicional</h3>
+                        <p>Além da margem dos equipamentos, ganhamos 0,4% ao mês sobre o valor financiado.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Calculator -->
+            <section class="content-section" id="calculator">
+                <div class="section-header">
+                    <h1>🧮 Usando a Calculadora</h1>
+                    <p class="breadcrumb">Como Usar > Calculadora</p>
+                </div>
+
+                <div class="step-by-step">
+                    <h2>Passo a Passo</h2>
+                    
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Monte o Orçamento no ERP</h3>
+                        <p>Crie o orçamento normalmente incluindo todos os equipamentos e serviços necessários.</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Localize o Valor de Comodato/Locação</h3>
+                        <p>No orçamento, procure o campo "Valor de Comodato/Locação". Este valor já inclui nossa margem de 35%.</p>
+                        <div class="warning-box">
+                            <strong>⚠️ ATENÇÃO:</strong> Remova produtos da Matriz do orçamento antes de usar a calculadora. O funding contempla apenas produtos específicos do cliente.
                         </div>
                     </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Use a Calculadora</h3>
+                        <p>Acesse a <a href="calculadora.html" target="_blank">Calculadora de Funding</a> e digite o valor de Comodato/Locação.</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Escolha o Melhor Plano</h3>
+                        <p>A calculadora mostrará 3 opções (48, 60 e 72 meses). Analise:</p>
+                        <ul>
+                            <li><strong>Parcela ao Cliente:</strong> Quanto mais baixa, mais atrativo</li>
+                            <li><strong>Tempo de Retorno:</strong> Quanto menor, melhor para nosso caixa</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <h3>Apresente ao Cliente</h3>
+                        <p>Mostre as opções de parcelamento e deixe o cliente escolher a que melhor se adequa ao orçamento do condomínio.</p>
+                    </div>
                 </div>
 
-                <div class="step-card">
-                    <div class="step-header">
-                        <div class="step-number">3</div>
-                        <div class="step-title">Copie o Valor</div>
+                <div class="info-box">
+                    <h3>💡 Dica de Negociação</h3>
+                    <p>Normalmente, prazos mais longos (60 ou 72 meses) facilitam a aprovação, mesmo com um custo total ligeiramente maior. Use isso a seu favor na negociação.</p>
+                </div>
+            </section>
+
+            <!-- Seção Process -->
+            <section class="content-section" id="process">
+                <div class="section-header">
+                    <h1>📋 Processo Completo</h1>
+                    <p class="breadcrumb">Como Usar > Processo Completo</p>
+                </div>
+
+                <div class="step-by-step">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Você: Simula e Apresenta</h3>
+                        <ul>
+                            <li>Monte o orçamento no ERP</li>
+                            <li>Use a calculadora para simular parcelas</li>
+                            <li>Apresente as opções ao cliente</li>
+                            <li>Negocie o prazo mais adequado</li>
+                        </ul>
                     </div>
-                    <div class="step-description">
-                        Copie o valor exibido e cole na calculadora acima. Este valor já contempla:
-                        <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
-                            <li>Custo real dos produtos</li>
-                            <li>Margem de 35% (markup já aplicado pelo sistema)</li>
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Você: Registra no ERP</h3>
+                        <ul>
+                            <li>Insira a parcela escolhida no campo "Valor de Locação/Comodato"</li>
+                            <li>Verifique se o tempo de retorno está correto</li>
+                            <li>Envie o orçamento</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>FP&A: Aprova</h3>
+                        <p>O time de FP&A recebe automaticamente e valida:</p>
+                        <ul>
+                            <li>Cálculos do funding</li>
+                            <li>Consulta ao Serasa do cliente</li>
+                            <li>Retorno do investimento</li>
+                        </ul>
+                        <p><strong>SLA:</strong> 2 dias úteis para resposta</p>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Você: Executa a Obra</h3>
+                        <ul>
+                            <li>Após aprovação, inicie a implantação</li>
+                            <li>Respeite rigorosamente o escopo do orçamento aprovado</li>
+                            <li>Qualquer alteração precisa de aprovação gerencial</li>
+                        </ul>
+                        <div class="critical-box">
+                            <strong>🚨 CRÍTICO:</strong> A Ordem de Serviço (OS) deve ser idêntica ao orçamento aprovado. Mudanças podem invalidar o funding.
+                        </div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <h3>Você: Solicita o Crédito</h3>
+                        <p>Após finalizar a obra e ativar o serviço:</p>
+                        <ul>
+                            <li>Ative o cliente no sistema (Ativação BA + Entrega do Serviço)</li>
+                            <li>Solicite o crédito ao FP&A</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">6</div>
+                        <h3>FP&A: Processa com Q4Sec</h3>
+                        <p>O FP&A cuida de todo o trâmite com a Q4Sec:</p>
+                        <ul>
+                            <li>Validação final</li>
+                            <li>Solicitação do capital</li>
+                            <li>Assinatura de contratos</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">7</div>
+                        <h3>Crédito na Conta</h3>
+                        <p>Após assinatura do contrato:</p>
+                        <ul>
+                            <li>Valor total creditado na conta da unidade</li>
+                            <li>Boletos das parcelas começam a chegar no mês seguinte</li>
                         </ul>
                     </div>
                 </div>
+            </section>
 
-                <div class="step-card">
-                    <div class="step-header">
-                        <div class="step-number">⚠️</div>
-                        <div class="step-title">IMPORTANTE: Remova Produtos da Matriz</div>
+            <!-- Seção ERP -->
+            <section class="content-section" id="erp">
+                <div class="section-header">
+                    <h1>💻 Registro no ERP</h1>
+                    <p class="breadcrumb">Como Usar > Registro no ERP</p>
+                </div>
+
+                <div class="step-by-step">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Acesse o Orçamento</h3>
+                        <p>Menu: Operacional/Vendas → Orçamentos → Consulta de Orçamentos</p>
                     </div>
-                    <div class="step-description">
-                        <strong style="color: #e53e3e;">Antes de usar a calculadora, certifique-se de remover os produtos da Matriz do orçamento.</strong>
-                        <br>O funding deve contemplar apenas os produtos que serão adquiridos/locados para o cliente específico.
+
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Localize o Campo de Funding</h3>
+                        <p>Na aba "FECHAMENTO", você encontrará:</p>
+                        <ul>
+                            <li><strong>Valor Total do Orçamento:</strong> Use este na calculadora</li>
+                            <li><strong>Valor de Locação/Comodato:</strong> Insira a parcela escolhida aqui</li>
+                            <li><strong>Tempo de Retorno:</strong> Deve coincidir com o da calculadora</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Preencha a Parcela</h3>
+                        <p>Após simular na calculadora:</p>
+                        <ul>
+                            <li>Copie o valor da "Parcela Mensal (Cliente)"</li>
+                            <li>Cole no campo "Valor de Locação/Comodato"</li>
+                            <li>Confirme se o tempo de retorno bate</li>
+                        </ul>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Envie para Aprovação</h3>
+                        <p>Finalize o orçamento normalmente. Um ticket será aberto automaticamente para o FP&A.</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- Seção FAQ -->
+            <section class="content-section" id="faq">
+                <div class="section-header">
+                    <h1>❓ Perguntas Frequentes</h1>
+                    <p class="breadcrumb">Suporte > FAQ</p>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Qual o prazo mínimo e máximo de funding?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Trabalhamos com 3 opções fixas: <strong>48, 60 ou 72 meses</strong>. Não é possível parcelar em prazos diferentes.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>O cliente pode quitar antecipadamente?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Sim, mas entre em contato com o FP&A para calcular o valor correto de quitação, considerando os juros já pagos e descontos aplicáveis.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Posso alterar o orçamento após aprovação do funding?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p><strong>NÃO.</strong> Qualquer alteração de produtos, quantidades ou valores após a aprovação do FP&A pode invalidar o funding e precisa de nova aprovação gerencial.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Quanto tempo demora para receber o crédito?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Após a ativação do serviço e solicitação ao FP&A, o processamento com a Q4Sec leva em média <strong>5 a 10 dias úteis</strong> até o crédito na conta.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Todo cliente é aprovado para funding?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Não. O FP&A faz consulta ao Serasa e analisa o risco de crédito. Clientes com restrições podem ser reprovados.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFAQ(this)">
+                        <span>Por que preciso remover produtos da Matriz?</span>
+                        <span>+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <p>O funding contempla apenas equipamentos específicos do cliente. Produtos da Matriz não entram no cálculo do financiamento e podem distorcer os valores.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção Contacts -->
+            <section class="content-section" id="contacts">
+                <div class="section-header">
+                    <h1>📞 Contatos</h1>
+                    <p class="breadcrumb">Suporte > Contatos</p>
+                </div>
+
+                <div class="step-by-step">
+                    <div class="step">
+                        <h3>Dúvidas sobre Funding</h3>
+                        <p><strong>Equipe FP&A</strong></p>
+                        <p>E-mail: fpa@portergroup.com.br</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Suporte Técnico (Sistema)</h3>
+                        <p><strong>Bernardo Kunz</strong></p>
+                        <p>E-mail: bernardo.kunz@portergroup.com.br</p>
+                        <p>Telefone: (48) 9 9958-7766</p>
+                    </div>
+
+                    <div class="step">
+                        <h3>Problemas com Orçamento/ERP</h3>
+                        <p><strong>Suporte Inside</strong></p>
+                        <p>Abra chamado através do sistema de tickets</p>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔗 Links Úteis</h3>
+                    <ul>
+                        <li><a href="calculadora.html" target="_blank">Calculadora de Funding</a></li>
+                        <li><a href="index.html">Voltar ao Hub</a></li>
+                        <li><a href="https://github.com/bene-sysa/funding-2.0" target="_blank">Repositório no GitHub</a></li>
+                    </ul>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script>
-        let selectedPlan = null;
-
-        function calcular() {
-            const valorInput = document.getElementById('valorInput');
-            const valor = parseFloat(valorInput.value);
-
-            console.log('Valor digitado:', valorInput.value);
-            console.log('Valor parseado:', valor);
-
-            if (!valor || valor <= 0 || isNaN(valor)) {
-                alert('Por favor, insira um valor válido maior que zero.');
-                return;
-            }
-
-            // Cálculo do custo real que será contratado com Q4Sec (removendo os 35%)
-            const valorQ4Sec = valor / 1.35;
-
-            // Taxas mensais
-            const taxaCliente = 0.028; // 2,8% ao mês (taxa repassada ao cliente)
-            const taxaQ4Sec = 0.024;   // 2,4% ao mês (taxa da Q4Sec)
-
-            const planos = [
-                { prazo: 48, nome: '48 meses' },
-                { prazo: 60, nome: '60 meses' },
-                { prazo: 72, nome: '72 meses' }
-            ];
-
-            const resultados = planos.map(plano => {
-                // Função PMT: calcula o pagamento de um empréstimo
-                // PMT = (VP * taxa) / (1 - (1 + taxa)^-prazo)
-                
-                // PMT que o cliente pagará mensalmente
-                const pmtCliente = (valor * taxaCliente) / (1 - Math.pow(1 + taxaCliente, -plano.prazo));
-                
-                // PMT que a filial pagará à Q4Sec mensalmente
-                const pmtQ4Sec = (valorQ4Sec * taxaQ4Sec) / (1 - Math.pow(1 + taxaQ4Sec, -plano.prazo));
-                
-                // Tempo de retorno: quantos meses da parcela do cliente são necessários
-                // para cobrir o valor total de comodato/locação
-                // Se tiver qualquer fração de mês, arredonda para cima
-                const tempoRetorno = Math.ceil(valor / pmtCliente);
-
-                return {
-                    ...plano,
-                    pmtCliente: pmtCliente,
-                    pmtQ4Sec: pmtQ4Sec,
-                    tempoRetorno: tempoRetorno,
-                    valorQ4Sec: valorQ4Sec
-                };
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
             });
 
-            exibirResultados(resultados, valor);
-        }
+            document.getElementById(sectionId).classList.add('active');
 
-        function exibirResultados(resultados, valorOriginal) {
-            const resultsSection = document.getElementById('resultsSection');
-            const resultsGrid = document.getElementById('resultsGrid');
-
-            resultsGrid.innerHTML = '';
-
-            resultados.forEach((resultado, index) => {
-                const card = document.createElement('div');
-                card.className = 'result-card';
-                card.onclick = () => selecionarPlano(index);
-                card.id = `plan-${index}`;
-
-                card.innerHTML = `
-                    <div class="result-title">${resultado.nome}</div>
-                    <div class="result-item">
-                        <span class="result-label">Parcela Mensal (Cliente)</span>
-                        <span class="result-value highlight-value">R$ ${resultado.pmtCliente.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Tempo de Retorno</span>
-                        <span class="result-value">${resultado.tempoRetorno} meses</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Crédito a Receber da Q4Sec</span>
-                        <span class="result-value">R$ ${resultado.valorQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Parcela à Q4Sec (mensal)</span>
-                        <span class="result-value">R$ ${resultado.pmtQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    </div>
-                `;
-
-                resultsGrid.appendChild(card);
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
             });
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
 
-            resultsSection.classList.add('active');
-            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            document.getElementById('sidebar').classList.remove('mobile-open');
         }
 
-        function selecionarPlano(index) {
-            // Remove seleção anterior
-            document.querySelectorAll('.result-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-
-            // Adiciona seleção ao plano escolhido
-            document.getElementById(`plan-${index}`).classList.add('selected');
-            selectedPlan = index;
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('span:last-child');
+            
+            answer.classList.toggle('active');
+            icon.textContent = answer.classList.contains('active') ? '−' : '+';
         }
 
-        // Remover formatação automática que estava impedindo o input
-        // document.getElementById('valorInput').addEventListener('input', function(e) {
-        //     let value = e.target.value.replace(/\D/g, '');
-        //     if (value) {
-        //         value = (parseInt(value) / 100).toFixed(2);
-        //         e.target.value = value;
-        //     }
-        // });
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        }
 
-        // Calcular ao pressionar Enter
-        document.getElementById('valorInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                calcular();
-            }
-        });
-    </script>
-</body>
-</html>
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle');
+            
+            if (!sidebar.contains(e.target) && !toggleBtn.contains(e.target)) {
+                sidebar.classList.remove('mobile-open');
