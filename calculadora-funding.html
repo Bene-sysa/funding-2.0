@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Funding 2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border: 2px solid #4fd1c7;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-banner h3 {
+            color: #234e52;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-banner p {
+            color: #2c5f63;
+            line-height: 1.6;
+        }
+
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .currency-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-weight: 500;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 1.2rem 3rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .results-section {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 15px;
+            padding: 2rem;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: #667eea;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .result-card.selected {
+            border-color: #48bb78;
+            background: linear-gradient(135deg, #c6f6d5, #9ae6b4);
+        }
+
+        .result-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 30px;
+            height: 30px;
+            background: #48bb78;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #2d3748;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .highlight-value {
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+
+        .tutorial-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .tutorial-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .tutorial-header h2 {
+            color: #2d3748;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .steps-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border-left: 5px solid #667eea;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .step-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-left: 3rem;
+        }
+
+        .screenshot-container {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            color: #718096;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Calculadora de Funding 2.0</h1>
+            <p>Simule parcelas e retorno do investimento</p>
+        </div>
+
+        <div class="calculator-card">
+            <div class="info-banner">
+                <h3>ℹ️ Como usar esta calculadora</h3>
+                <p><strong>1.</strong> Acesse o orçamento no ERP e localize o campo "Valor de Comodato/Locação" (veja tutorial abaixo)</p>
+                <p><strong>2.</strong> Digite esse valor na calculadora</p>
+                <p><strong>3.</strong> Escolha a melhor opção de parcelamento para sua negociação</p>
+            </div>
+
+            <div class="input-section">
+                <div class="input-group">
+                    <label>Valor de Comodato/Locação</label>
+                    <div class="input-wrapper">
+                        <span class="currency-prefix">R$</span>
+                        <input 
+                            type="number" 
+                            id="valorInput" 
+                            placeholder="0,00" 
+                            step="0.01"
+                            min="0"
+                        >
+                    </div>
+                    <small style="color: #718096; margin-top: 0.5rem; display: block;">
+                        Este valor já inclui a margem de 35% calculada pelo ERP
+                    </small>
+                </div>
+
+                <button class="calculate-btn" onclick="calcular()">
+                    🧮 Calcular Parcelas
+                </button>
+            </div>
+
+            <div class="results-section" id="resultsSection">
+                <h3 style="text-align: center; color: #2d3748; margin-bottom: 1rem;">
+                    📊 Opções de Parcelamento
+                </h3>
+                <div class="results-grid" id="resultsGrid"></div>
+            </div>
+        </div>
+
+        <div class="tutorial-section">
+            <div class="tutorial-header">
+                <h2>📖 Onde encontrar o Valor de Comodato/Locação no ERP</h2>
+                <p style="color: #718096;">Siga este passo a passo para localizar o valor correto</p>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Acesse o Orçamento</div>
+                    </div>
+                    <div class="step-description">
+                        No sistema ERP, navegue até o orçamento criado para o funding
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Localize o Campo</div>
+                    </div>
+                    <div class="step-description">
+                        Na tela de orçamento, procure pelo campo <strong>"Valor de Comodato/Locação"</strong>
+                        <div class="screenshot-container">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='100'%3E%3Crect width='600' height='100' fill='%23f8fafc'/%3E%3Ctext x='300' y='50' font-family='Arial' font-size='14' fill='%23718096' text-anchor='middle' dominant-baseline='middle'%3EVeja o print de exemplo acima - Valor exibido: R$ 2.754,01%3C/text%3E%3C/svg%3E" alt="Localização do campo" style="max-width: 100%; border-radius: 8px;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Copie o Valor</div>
+                    </div>
+                    <div class="step-description">
+                        Copie o valor exibido e cole na calculadora acima. Este valor já contempla:
+                        <ul style="margin-top: 0.5rem; margin-left: 1.5rem;">
+                            <li>Custo real dos produtos</li>
+                            <li>Margem de 35% (markup já aplicado pelo sistema)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <div class="step-number">⚠️</div>
+                        <div class="step-title">IMPORTANTE: Remova Produtos da Matriz</div>
+                    </div>
+                    <div class="step-description">
+                        <strong style="color: #e53e3e;">Antes de usar a calculadora, certifique-se de remover os produtos da Matriz do orçamento.</strong>
+                        <br>O funding deve contemplar apenas os produtos que serão adquiridos/locados para o cliente específico.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlan = null;
+
+        function calcular() {
+            const valorInput = document.getElementById('valorInput').value;
+            const valor = parseFloat(valorInput);
+
+            if (!valor || valor <= 0) {
+                alert('Por favor, insira um valor válido.');
+                return;
+            }
+
+            // Cálculo do custo real que será contratado com Q4Sec (removendo os 35%)
+            const valorQ4Sec = valor / 1.35;
+
+            // Taxas mensais
+            const taxaCliente = 0.028; // 2,8% ao mês (taxa repassada ao cliente)
+            const taxaQ4Sec = 0.024;   // 2,4% ao mês (taxa da Q4Sec)
+
+            const planos = [
+                { prazo: 48, nome: '48 meses' },
+                { prazo: 60, nome: '60 meses' },
+                { prazo: 72, nome: '72 meses' }
+            ];
+
+            const resultados = planos.map(plano => {
+                // Função PMT: calcula o pagamento de um empréstimo
+                // PMT = (VP * taxa) / (1 - (1 + taxa)^-prazo)
+                
+                // PMT que o cliente pagará mensalmente
+                const pmtCliente = (valor * taxaCliente) / (1 - Math.pow(1 + taxaCliente, -plano.prazo));
+                
+                // PMT que a filial pagará à Q4Sec mensalmente
+                const pmtQ4Sec = (valorQ4Sec * taxaQ4Sec) / (1 - Math.pow(1 + taxaQ4Sec, -plano.prazo));
+                
+                // Tempo de retorno: quantos meses da parcela do cliente são necessários
+                // para cobrir o valor total de comodato/locação
+                // Se tiver qualquer fração de mês, arredonda para cima
+                const tempoRetorno = Math.ceil(valor / pmtCliente);
+
+                return {
+                    ...plano,
+                    pmtCliente: pmtCliente,
+                    pmtQ4Sec: pmtQ4Sec,
+                    tempoRetornoMeses: tempoRetornoMeses,
+                    tempoRetornoDias: diasRestantes,
+                    valorQ4Sec: valorQ4Sec
+                };
+            });
+
+            exibirResultados(resultados, valor);
+        }
+
+        function exibirResultados(resultados, valorOriginal) {
+            const resultsSection = document.getElementById('resultsSection');
+            const resultsGrid = document.getElementById('resultsGrid');
+
+            resultsGrid.innerHTML = '';
+
+            resultados.forEach((resultado, index) => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.onclick = () => selecionarPlano(index);
+                card.id = `plan-${index}`;
+
+                card.innerHTML = `
+                    <div class="result-title">${resultado.nome}</div>
+                    <div class="result-item">
+                        <span class="result-label">Parcela Mensal (Cliente)</span>
+                        <span class="result-value highlight-value">R$ ${resultado.pmtCliente.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tempo de Retorno</span>
+                        <span class="result-value">${resultado.tempoRetornoMeses} meses e ${resultado.tempoRetornoDias} dias</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Crédito a Receber da Q4Sec</span>
+                        <span class="result-value">R$ ${resultado.valorQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Parcela à Q4Sec (mensal)</span>
+                        <span class="result-value">R$ ${resultado.pmtQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                    </div>
+                `;
+
+                resultsGrid.appendChild(card);
+            });
+
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function selecionarPlano(index) {
+            // Remove seleção anterior
+            document.querySelectorAll('.result-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Adiciona seleção ao plano escolhido
+            document.getElementById(`plan-${index}`).classList.add('selected');
+            selectedPlan = index;
+        }
+
+        // Formatar input enquanto digita
+        document.getElementById('valorInput').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value) {
+                value = (parseInt(value) / 100).toFixed(2);
+                e.target.value = value;
+            }
+        });
+
+        // Calcular ao pressionar Enter
+        document.getElementById('valorInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calcular();
+            }
+        });
+    </script>
+</body>
+</html>
