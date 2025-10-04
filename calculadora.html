@@ -445,12 +445,12 @@
                 // PMT que o cliente pagará mensalmente
                 const pmtCliente = (valor * taxaCliente) / (1 - Math.pow(1 + taxaCliente, -plano.prazo));
                 
-                // PMT que a filial pagará à Q4Sec mensalmente
-                const pmtQ4Sec = (valorQ4Sec * taxaQ4Sec) / (1 - Math.pow(1 + taxaQ4Sec, -plano.prazo));
+                // Cálculo Q4Sec: 36 meses fixo com 2,4% ao ano (7,2% total)
+                const totalPagarQ4Sec = valorQ4Sec * 1.072; // 7,2% de juros sobre o crédito
+                const pmtQ4Sec = totalPagarQ4Sec / 36; // Dividido em 36 parcelas fixas
                 
                 // Tempo de retorno: quantos meses da parcela do cliente são necessários
                 // para cobrir o valor total de comodato/locação
-                // Se tiver qualquer fração de mês, arredonda para cima
                 const tempoRetorno = Math.ceil(valor / pmtCliente);
 
                 return {
