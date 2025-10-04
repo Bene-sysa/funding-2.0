@@ -131,6 +131,17 @@
             margin-right: 0.5rem;
         }
 
+        .step-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #e2e8f0;
+            display: block;
+        }
+
         .info-box {
             background: linear-gradient(135deg, #e6fffa, #b2f5ea);
             border: 2px solid #4fd1c7;
@@ -183,6 +194,12 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .step-image {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -257,6 +274,8 @@
                     <p>O portal do consultor registra a proposta, com o número do orçamento que foi criado no ERP.</p>
                     <p><strong>Menu:</strong> Operacional/Vendas > Orçamentos > Consulta de Orçamentos</p>
                     <p>Você pode buscar pelo seu orçamento nos campos: Orçam:, Cliente, Vendedor, etc.</p>
+                    
+                    <img src="https://drive.google.com/uc?export=view&id=1zNrs6Ruux8fWjRmFO9xFwPCgQ6JgQvlZ" alt="Filtros de busca de orçamentos no sistema" class="step-image" id="img-filtros">
                 </div>
 
                 <div class="info-box">
@@ -273,6 +292,8 @@
                     <h3><span class="step-number">1</span> Aba FECHAMENTO</h3>
                     <p>Ao acessar seu Orçamento no ERP, busque pela aba <strong>FECHAMENTO</strong>.</p>
                     <p>É nessa aba que estarão as informações que você precisa preencher na calculadora de Funding.</p>
+                    
+                    <img src="placeholder-image-2.jpg" alt="Localização dos campos: Valor Total da Locação, Tempo para Retorno e Valor do Comodato/Locação" class="step-image" id="img-valores">
                 </div>
 
                 <div class="step">
@@ -294,6 +315,8 @@
                     <h3><span class="step-number">4</span> Finalize o Orçamento</h3>
                     <p>Preencha as demais informações: prazo, forma de pagamento, observações internas, etc.</p>
                     <p>Com todas as informações preenchidas você pode <strong>fechar seu orçamento!</strong></p>
+                    
+                    <img src="placeholder-image-3.jpg" alt="Campo para preencher a parcela de funding no orçamento" class="step-image" id="img-parcela">
                 </div>
             </section>
 
@@ -312,7 +335,7 @@
                 </div>
 
                 <div class="warning-box">
-                    <p>Alguns fatores podem influenciar no resultado negativo da aprovação, como a inadimplência do cliente. Além da análise de receitas, a equipe de FP&A da matriz realiza a cnsulta no SERASA.</p>
+                    <p>Alguns fatores podem influenciar no resultado negativo da aprovação, como a inadimplência do cliente. Além da análise de receitas, a equipe de FP&A da matriz realiza a consulta no SERASA.</p>
                 </div>
             </section>
 
