@@ -426,7 +426,7 @@
             }
 
             // Cálculo do custo real que será contratado com Q4Sec (removendo os 35%)
-            const valorQ4Sec = valor / 1.35;
+            const valorQ4Sec = valor / 1.356;
 
             // Taxas mensais
             const taxaCliente = 0.028; // 2,8% ao mês (taxa repassada ao cliente)
@@ -480,20 +480,12 @@
                 card.innerHTML = `
                     <div class="result-title">${resultado.nome}</div>
                     <div class="result-item">
-                        <span class="result-label">Parcela Mensal (Cliente)</span>
+                        <span class="result-label">Parcela Funding</span>
                         <span class="result-value highlight-value">R$ ${resultado.pmtCliente.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Tempo de Retorno</span>
+                        <span class="result-label">Prazo para Retorno</span>
                         <span class="result-value">${resultado.tempoRetorno} meses</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Crédito a Receber da Q4Sec</span>
-                        <span class="result-value">R$ ${resultado.valorQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Parcela à Q4Sec (mensal)</span>
-                        <span class="result-value">R$ ${resultado.pmtQ4Sec.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                     </div>
                 `;
 
