@@ -1,15 +1,2 @@
 [build]
   publish = "."
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-  conditions = {Role = ["admin", "authorized"]}
-
-[[redirects]]
-  from = "/*"
-  to = "/login.html"
-  status = 302
-  force = true
