@@ -135,6 +135,15 @@
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
+        .export-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            margin-top: 2rem;
+        }
+
+        .export-btn:hover {
+            box-shadow: 0 10px 30px rgba(72, 187, 120, 0.4);
+        }
+
         .results-section {
             display: none;
             animation: fadeIn 0.5s ease-out;
@@ -349,6 +358,10 @@
                     📊 Opções de Parcelamento
                 </h3>
                 <div class="results-grid" id="resultsGrid"></div>
+                
+                <button class="calculate-btn export-btn" id="exportBtn" onclick="exportarPDF()" style="display: none;">
+                    📄 Exportar Simulação em PDF
+                </button>
             </div>
         </div>
 
@@ -377,7 +390,7 @@
                     <div class="step-description">
                         Na tela de orçamento, procure pelo campo <strong>"Valor de Comodato/Locação"</strong>
                         <div class="screenshot-container">
-                            <img src="https://i.imgur.com/fDSZHQN.png" alt="Localização dos campos: Valor de Comodato/Locação, Tempo para Retorno e Valor do Comodato/Locação" class="step-image" id="img-valores">
+                            <img src="https://i.imgur.com/fDSZHQN.png" alt="Localização dos campos" style="max-width: 100%; height: auto;">
                         </div>
                     </div>
                 </div>
@@ -410,27 +423,24 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         let selectedPlan = null;
+        let ultimosResultados = null;
+        let ultimoValorOriginal = null;
 
         function calcular() {
             const valorInput = document.getElementById('valorInput');
             const valor = parseFloat(valorInput.value);
-
-            console.log('Valor digitado:', valorInput.value);
-            console.log('Valor parseado:', valor);
 
             if (!valor || valor <= 0 || isNaN(valor)) {
                 alert('Por favor, insira um valor válido maior que zero.');
                 return;
             }
 
-            // Cálculo do custo real que será contratado com Q4Sec (removendo os 35%)
             const valorQ4Sec = valor / 1.356;
-
-            // Taxas mensais
-            const taxaCliente = 0.028; // 2,8% ao mês (taxa repassada ao cliente)
-            const taxaQ4Sec = 0.024;   // 2,4% ao mês (taxa da Q4Sec)
+            const taxaCliente = 0.028;
+            const taxaQ4Sec = 0.024;
 
             const planos = [
                 { prazo: 48, nome: '48 meses' },
@@ -439,18 +449,9 @@
             ];
 
             const resultados = planos.map(plano => {
-                // Função PMT: calcula o pagamento de um empréstimo
-                // PMT = (VP * taxa) / (1 - (1 + taxa)^-prazo)
-                
-                // PMT que o cliente pagará mensalmente
                 const pmtCliente = (valor * taxaCliente) / (1 - Math.pow(1 + taxaCliente, -plano.prazo));
-                
-                // Cálculo Q4Sec: 36 meses fixo com 2,4% ao ano (7,2% total)
-                const totalPagarQ4Sec = valorQ4Sec * 1.072; // 7,2% de juros sobre o crédito
-                const pmtQ4Sec = totalPagarQ4Sec / 36; // Dividido em 36 parcelas fixas
-                
-                // Tempo de retorno: quantos meses da parcela do cliente são necessários
-                // para cobrir o valor total de comodato/locação
+                const totalPagarQ4Sec = valorQ4Sec * 1.072;
+                const pmtQ4Sec = totalPagarQ4Sec / 36;
                 const tempoRetorno = Math.ceil(valor / pmtCliente);
 
                 return {
@@ -463,6 +464,9 @@
             });
 
             exibirResultados(resultados, valor);
+            
+            ultimosResultados = resultados;
+            ultimoValorOriginal = valor;
         }
 
         function exibirResultados(resultados, valorOriginal) {
@@ -494,41 +498,153 @@
 
             resultsSection.classList.add('active');
             resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            document.getElementById('exportBtn').style.display = 'flex';
         }
 
         function selecionarPlano(index) {
-            // Remove seleção anterior
             document.querySelectorAll('.result-card').forEach(card => {
                 card.classList.remove('selected');
             });
 
-            // Adiciona seleção ao plano escolhido
             document.getElementById(`plan-${index}`).classList.add('selected');
             selectedPlan = index;
         }
 
-        // Remover formatação automática que estava impedindo o input
-        // document.getElementById('valorInput').addEventListener('input', function(e) {
-        //     let value = e.target.value.replace(/\D/g, '');
-        //     if (value) {
-        //         value = (parseInt(value) / 100).toFixed(2);
-        //         e.target.value = value;
-        //     }
-        // });
+        function exportarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const primaryColor = [102, 126, 234];
+            const textColor = [45, 55, 72];
+            const grayColor = [113, 128, 150];
+            const successColor = [72, 187, 120];
+            
+            let yPos = 20;
+            
+            // Cabeçalho
+            doc.setFillColor(...primaryColor);
+            doc.rect(0, 0, 210, 40, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('Simulação de Funding', 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            const dataHora = new Date().toLocaleString('pt-BR');
+            doc.text(`Gerado em: ${dataHora}`, 105, 30, { align: 'center' });
+            
+            yPos = 55;
+            
+            // Dados de Entrada
+            doc.setTextColor(...textColor);
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.text('Dados da Simulação', 20, yPos);
+            
+            yPos += 10;
+            doc.setFontSize(11);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(...grayColor);
+            doc.text('Valor de Comodato/Locação:', 20, yPos);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(...textColor);
+            doc.text(`R$ ${ultimoValorOriginal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 80, yPos);
+            
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(...grayColor);
+            doc.text('* Este valor já inclui a margem de 35% calculada pelo ERP', 20, yPos);
+            
+            yPos += 15;
+            
+            // Título da Tabela
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(...textColor);
+            doc.text('Opções de Parcelamento', 20, yPos);
+            
+            yPos += 10;
+            
+            // Tabela de Resultados
+            ultimosResultados.forEach((resultado, index) => {
+                const isSelected = selectedPlan === index;
+                
+                if (isSelected) {
+                    doc.setFillColor(198, 246, 213);
+                    doc.setDrawColor(...successColor);
+                    doc.setLineWidth(0.5);
+                } else {
+                    doc.setFillColor(248, 250, 252);
+                    doc.setDrawColor(226, 232, 240);
+                    doc.setLineWidth(0.3);
+                }
+                doc.roundedRect(20, yPos - 5, 170, 35, 3, 3, 'FD');
+                
+                if (isSelected) {
+                    doc.setFillColor(...successColor);
+                    doc.circle(185, yPos, 4, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.setFont(undefined, 'bold');
+                    doc.text('✓', 185, yPos + 1.5, { align: 'center' });
+                }
+                
+                doc.setTextColor(...primaryColor);
+                doc.setFontSize(14);
+                doc.setFont(undefined, 'bold');
+                doc.text(resultado.nome, 25, yPos + 2);
+                
+                doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(...grayColor);
+                doc.text('Parcela Funding:', 25, yPos + 10);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(...textColor);
+                doc.text(`R$ ${resultado.pmtCliente.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, 65, yPos + 10);
+                
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(...grayColor);
+                doc.text('Prazo para Retorno:', 25, yPos + 18);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(...textColor);
+                doc.text(`${resultado.tempoRetorno} meses`, 65, yPos + 18);
+                
+                doc.setFont(undefined, 'normal');
+                doc.setTextColor(...grayColor);
+                doc.text('Total de Parcelas:', 25, yPos + 26);
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(...textColor);
+                doc.text(`${resultado.prazo} meses`, 65, yPos + 26);
+                
+                yPos += 42;
+            });
+            
+            yPos += 10;
+            doc.setFontSize(9);
+            doc.setFont(undefined, 'italic');
+            doc.setTextColor(...grayColor);
+            doc.text('Esta simulação é uma estimativa e pode sofrer alterações conforme condições contratuais.', 105, yPos, { align: 'center' });
+            
+            if (selectedPlan !== null) {
+                yPos += 5;
+                doc.setFont(undefined, 'bold');
+                doc.setTextColor(...successColor);
+                doc.text(`Plano selecionado: ${ultimosResultados[selectedPlan].nome}`, 105, yPos, { align: 'center' });
+            }
+            
+            const nomeArquivo = `Simulacao_Funding_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nomeArquivo);
+        }
 
-        // Calcular ao pressionar Enter
         document.getElementById('valorInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 calcular();
             }
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script>
-        let selectedPlan = null;
-        let ultimosResultados = null;
-        let ultimoValorOriginal = null;
-
-        function calcular() {
 </body>
 </html>
